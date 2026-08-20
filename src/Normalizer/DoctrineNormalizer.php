@@ -53,7 +53,7 @@ class DoctrineNormalizer implements NormalizerInterface, DenormalizerInterface
         ];
     }
 
-    public function supportsDenormalization($data, $type, $format = null)
+    public function supportsDenormalization(mixed $data, string $type, ?string $format = null, array $context = []): bool
     {
         return isset($data['className']) && $this->hasMetadataFor($data['className']);
     }

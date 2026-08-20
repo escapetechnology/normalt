@@ -70,7 +70,7 @@ class RecursiveReflectionNormalizer extends AggregateNormalizer implements Aggre
         ];
     }
 
-    public function supportsDenormalization($data, $type, $format = null)
+    public function supportsDenormalization(mixed $data, string $type, ?string $format = null, array $context = []): bool
     {
         return is_array($data) && class_exists($type);
     }

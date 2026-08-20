@@ -46,7 +46,7 @@ class AggregateNormalizer implements NormalizerInterface, DenormalizerInterface,
 
     public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
     {
-        return (boolean) $this->getNormalizer($data, $format);
+        return (boolean) $this->getNormalizer($data, $format, $context);
     }
 
     public function getSupportedTypes(?string $format): array
@@ -56,7 +56,7 @@ class AggregateNormalizer implements NormalizerInterface, DenormalizerInterface,
         ];
     }
 
-    public function supportsDenormalization($data, $type, $format = null)
+    public function supportsDenormalization(mixed $data, string $type, ?string $format = null, array $context = []): bool
     {
         return (boolean) $this->getDenormalizer($data, $type, $format);
     }
@@ -76,10 +76,10 @@ class AggregateNormalizer implements NormalizerInterface, DenormalizerInterface,
         }
     }
 
-    protected function getNormalizer($data, $format = null)
+    protected function getNormalizer(mixed $data, ?string $format = null, array $context = [])
     {
         foreach ($this->normalizers as $normalizer) {
-            if (false == $normalizer->supportsNormalization($data, $format)) {
+            if (false == $normalizer->supportsNormalization($data, $format, $context)) {
                 continue;
             }
 
@@ -91,10 +91,10 @@ class AggregateNormalizer implements NormalizerInterface, DenormalizerInterface,
         }
     }
 
-    protected function getDenormalizer($data, $type, $format = null)
+    protected function getDenormalizer(mixed $data, string $type, ?string $format = null, array $context = [])
     {
         foreach ($this->denormalizers as $denormalizer) {
-            if (false == $denormalizer->supportsDenormalization($data, $type, $format)) {
+            if (false == $denormalizer->supportsDenormalization($data, $type, $format, $context)) {
                 continue;
             }
 
