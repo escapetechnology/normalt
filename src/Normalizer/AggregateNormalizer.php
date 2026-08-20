@@ -61,7 +61,7 @@ class AggregateNormalizer implements NormalizerInterface, DenormalizerInterface,
         return (boolean) $this->getDenormalizer($data, $type, $format);
     }
 
-    public function setSerializer(SerializerInterface $serializer)
+    public function setSerializer(SerializerInterface $serializer): void
     {
         foreach ($this->normalizers as $normalizer) {
             if ($normalizer instanceof SerializerAwareInterface) {
