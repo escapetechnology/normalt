@@ -41,7 +41,7 @@ class DoctrineNormalizer implements NormalizerInterface, DenormalizerInterface
         return $this->objectManager->find($className, $data);
     }
 
-    public function supportsNormalization($data, $format = null)
+    public function supportsNormalization($data, $format = null): bool
     {
         return is_object($data) && $this->hasMetadataFor(get_class($data));
     }

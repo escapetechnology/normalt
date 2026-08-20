@@ -58,7 +58,7 @@ class RecursiveReflectionNormalizer extends AggregateNormalizer implements Aggre
         $this->aggregate = $aggregate;
     }
 
-    public function supportsNormalization($data, $format = null)
+    public function supportsNormalization($data, $format = null): bool
     {
         return is_object($data);
     }

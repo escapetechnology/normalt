@@ -44,7 +44,7 @@ class AggregateNormalizer implements NormalizerInterface, DenormalizerInterface,
         throw new UnexpectedValueException('No supported normalizer found for "' . $class . '".');
     }
 
-    public function supportsNormalization($data, $format = null)
+    public function supportsNormalization($data, $format = null): bool
     {
         return (boolean) $this->getNormalizer($data, $format);
     }
