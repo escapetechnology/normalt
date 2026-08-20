@@ -2,6 +2,7 @@
 
 namespace Normalt\Normalizer;
 
+use ArrayObject;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
@@ -25,16 +26,16 @@ class AggregateNormalizer implements NormalizerInterface, DenormalizerInterface,
         array_map(array($this, 'add'), $normalizers);
     }
 
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize(mixed $data, ?string $format = null, array $context = []): ArrayObject|array|string|int|float|bool|null
     {
-        if ($normalizer = $this->getNormalizer($object, $format)) {
-            return $normalizer->normalize($object, $format, $context);
+        if ($normalizer = $this->getNormalizer($data, $format)) {
+            return $normalizer->normalize($data, $format, $context);
         }
 
-        throw new UnexpectedValueException('No supported normalizer found for "' . get_class($object) . '".');
+        throw new UnexpectedValueException('No supported normalizer found for "' . get_class($data) . '".');
     }
 
-    public function denormalize($data, $class, $format = null, array $context = array())
+    public function denormalize($data, $class, $format = null, array $context = array()): mixed
     {
         if ($denormalizer = $this->getDenormalizer($data, $class, $format)) {
             return $denormalizer->denormalize($data, $class, $format, $context);
@@ -46,6 +47,13 @@ class AggregateNormalizer implements NormalizerInterface, DenormalizerInterface,
     public function supportsNormalization($data, $format = null)
     {
         return (boolean) $this->getNormalizer($data, $format);
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            '*' => false,
+        ];
     }
 
     public function supportsDenormalization($data, $type, $format = null)

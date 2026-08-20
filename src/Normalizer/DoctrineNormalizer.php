@@ -2,6 +2,7 @@
 
 namespace Normalt\Normalizer;
 
+use ArrayObject;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
@@ -24,14 +25,14 @@ class DoctrineNormalizer implements NormalizerInterface, DenormalizerInterface
         $this->objectManager = $objectManager;
     }
 
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize(mixed $data, ?string $format = null, array $context = []): ArrayObject|array|string|int|float|bool|null
     {
-        $class = $this->objectManager->getClassMetadata(get_class($object));
+        $class = $this->objectManager->getClassMetadata(get_class($data));
 
-        return array('className' => $class->getName()) + $class->getIdentifierValues($object);
+        return array('className' => $class->getName()) + $class->getIdentifierValues($data);
     }
 
-    public function denormalize($data, $type, $format = null, array $context = array())
+    public function denormalize($data, $type, $format = null, array $context = array()): mixed
     {
         $className = $data['className'];
 
@@ -43,6 +44,13 @@ class DoctrineNormalizer implements NormalizerInterface, DenormalizerInterface
     public function supportsNormalization($data, $format = null)
     {
         return is_object($data) && $this->hasMetadataFor(get_class($data));
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            '*' => false,
+        ];
     }
 
     public function supportsDenormalization($data, $type, $format = null)

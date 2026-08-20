@@ -2,6 +2,7 @@
 
 namespace Normalt\Normalizer;
 
+use ArrayObject;
 use ReflectionObject;
 
 /**
@@ -21,21 +22,21 @@ class RecursiveReflectionNormalizer extends AggregateNormalizer implements Aggre
 {
     protected $normalizer;
 
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize(mixed $data, ?string $format = null, array $context = []): ArrayObject|array|string|int|float|bool|null
     {
         $normalized = array();
-        $reflection = new ReflectionObject($object);
+        $reflection = new ReflectionObject($data);
 
         foreach ($reflection->getProperties() as $property) {
             $property->setAccessible(true);
 
-            $normalized[$property->getName()] = $this->normalizeValue($property->getValue($object));
+            $normalized[$property->getName()] = $this->normalizeValue($property->getValue($data));
         }
 
         return $normalized;
     }
 
-    public function denormalize($data, $type, $format = null, array $context = array())
+    public function denormalize($data, $type, $format = null, array $context = array()): mixed
     {
         $prototype = $this->createPrototype($type);
         $reflection = new ReflectionObject($prototype);
@@ -60,6 +61,13 @@ class RecursiveReflectionNormalizer extends AggregateNormalizer implements Aggre
     public function supportsNormalization($data, $format = null)
     {
         return is_object($data);
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            '*' => false,
+        ];
     }
 
     public function supportsDenormalization($data, $type, $format = null)
